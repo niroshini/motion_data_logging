@@ -1,15 +1,16 @@
 /**
    Detects 'Active' and 'Inactive' motion and logs it with timestamps to a .csv file in SDCard.
-   Uses  HCSR505 PIR Passive Infra Red Motion Detector 
+   Uses  HCSR505 PIR Passive Infra Red Motion Detector.
+   Modified code from https://learn.adafruit.com/adafruit-data-logger-shield/using-the-real-time-clock-3
+   https://github.com/adafruit/Light-and-Temp-logger
+   Author: Niroshinie Fernando 
 */
 
 //Libraries
-
 #include "SD.h"
 #include <Wire.h>
 #include "RTClib.h"
 
-// A simple data logger for the Arduino analog pins
 #define LOG_INTERVAL  1000 // mills between entries. 
 // how many milliseconds before writing the logged data permanently to disk
 // set it to the LOG_INTERVAL to write each time (safest)
@@ -17,15 +18,15 @@
 // the last 10 reads if power is lost but it uses less power and is much faster!
 #define SYNC_INTERVAL 1000 // mills between calls to flush() - to write data to the card
 uint32_t syncTime = 0; // time of last sync()
-/*This how many milliseconds between sensor readings. 2000 is 2 seconds.*/
-#define ECHO_TO_SERIAL   1 // echo data to serial port. 
+
+
 /*
   determines whether to send the stuff thats being written to the card also out to the Serial monitor.
   This makes the logger a little more sluggish and you may want the serial monitor for other stuff.
   On the other hand, its hella useful. We'll set this to 1 to keep it on. Setting it to 0 will turn it off.
 
 */
-
+#define ECHO_TO_SERIAL   1 // echo data to serial port. 
 
 
 //Variables
@@ -52,8 +53,8 @@ void setup()
   createFile();
 
 
-  // connect to RTC
   /**
+   * connect to RTC
      Now we kick off the RTC by initializing the Wire library and poking the RTC to see if its alive.
   */
   initRTC();
@@ -68,9 +69,6 @@ void setup()
 #if ECHO_TO_SERIAL
   Serial.println("millis,stamp,datetime,motion");
 #endif //ECHO_TO_SERIAL
-
-  // If you want to set the aref to something other than 5v
-  // analogReference(EXTERNAL);
 
   pinMode(6, INPUT);
 }
